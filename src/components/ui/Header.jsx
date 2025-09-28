@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Icon from '../AppIcon';
 import { useAuth } from '../../contexts/AuthContext';
+import GovHeaderBar from '../GovHeaderBar';
+import { useTheme } from '../../contexts/ThemeContext';
 
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { isAbhaAuthenticated, abhaToken } = useAuth();
+  const { theme, toggle } = useTheme();
 
   const navigationItems = [
     {
@@ -54,19 +57,21 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-100 bg-surface border-b border-border clinical-shadow">
+    <div className="sticky top-0 z-100">
+      {/* Government banner reused site-wide */}
+      <GovHeaderBar />
+      {/* Existing application navigation below */}
+  {/* Light blue themed navigation bar */}
+  <header className="border-b clinical-shadow bg-gradient-to-r from-sky-50 via-blue-50 to-cyan-50 border-blue-100/60 backdrop-blur supports-[backdrop-filter]:bg-white/70 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 dark:border-slate-800">
       <div className="w-full">
         <div className="flex items-center justify-between h-16 px-4 lg:px-6">
           {/* Logo Section */}
           <div className="flex items-center space-x-3">
-            <Link to="/admin-dashboard" className="flex items-center space-x-3 clinical-transition clinical-hover:opacity-80">
+            <Link to="/admin-dashboard" className="flex items-center space-x-3 clinical-transition clinical-hover:opacity-80" aria-label="Go to dashboard">
               <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-lg">
                 <Icon name="Heart" size={24} color="white" strokeWidth={2} />
               </div>
-              <div className="hidden sm:block">
-                <h1 className="text-lg font-semibold text-text-primary">AYUSH</h1>
-                <p className="text-xs text-text-secondary -mt-1">Terminology Service</p>
-              </div>
+              {/* Text removed as requested */}
             </Link>
           </div>
 
@@ -131,6 +136,15 @@ const Header = () => {
             {/* Notifications */}
             <button className="hidden md:flex items-center justify-center w-10 h-10 rounded-lg text-text-secondary hover:text-text-primary hover:bg-muted clinical-transition">
               <Icon name="Bell" size={20} />
+            </button>
+
+            {/* Theme Toggle */}
+            <button
+              onClick={toggle}
+              aria-label="Toggle theme"
+              className="hidden md:flex items-center justify-center w-10 h-10 rounded-lg text-text-secondary hover:text-text-primary hover:bg-muted clinical-transition"
+            >
+              {theme === 'dark' ? <Icon name="Sun" size={18} /> : <Icon name="Moon" size={18} />}
             </button>
 
             {/* User Profile */}
@@ -204,6 +218,7 @@ const Header = () => {
         )}
       </div>
     </header>
+    </div>
   );
 };
 

@@ -20,6 +20,7 @@ const ClinicalDiagnosisEntryPage = () => {
   const [notification, setNotification] = useState(null);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [recordsRefreshCounter, setRecordsRefreshCounter] = useState(0);
 
   // Show welcome message when ABHA is authenticated but keep legacy interface as default
   useEffect(() => {
@@ -168,8 +169,9 @@ const ClinicalDiagnosisEntryPage = () => {
       
       showNotification(`Diagnoses saved with Patient ID: ${selectedPatient.id} and MRN: ${selectedPatient.medical_record_number}`, 'success');
       
-      // Reset problem list after successful save
+      // Reset problem list after successful save and trigger records refresh
       setProblemList([]);
+      setRecordsRefreshCounter(c => c + 1);
       
     } catch (error) {
       console.error('Error saving to patient record:', error);
@@ -244,9 +246,14 @@ const ClinicalDiagnosisEntryPage = () => {
           </div>
           
           {/* Patient Context */}
-          <PatientContext 
-            patientId={null} 
-            onSelectPatient={setSelectedPatient} 
+          <PatientContext
+            patientId={null}
+            onSelectPatient={setSelectedPatient}
+            onPersist={(persisted) => {
+              // When patient is saved, ensure selection has real id & refresh existing sessions
+              setSelectedPatient(persisted);
+              setRecordsRefreshCounter(c => c + 1);
+            }}
           />
 
           {/* Notification */}
@@ -296,9 +303,10 @@ const ClinicalDiagnosisEntryPage = () => {
               
               {/* Patient Records - Shows saved diagnoses */}
               {selectedPatient && selectedPatient.id && (
-                <PatientRecords 
-                  patientId={selectedPatient.id} 
+                <PatientRecords
+                  patientId={selectedPatient.id}
                   medicalRecordNumber={selectedPatient.medical_record_number}
+                  refreshTrigger={recordsRefreshCounter}
                 />
               )}
             </div>

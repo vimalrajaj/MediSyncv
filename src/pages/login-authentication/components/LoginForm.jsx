@@ -131,8 +131,8 @@ const LoginForm = () => {
 
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+    <div className="w-full h-full flex flex-col p-4 sm:p-8">
+      <form onSubmit={handleSubmit} className="w-full max-w-xl bg-white/85 backdrop-blur-xl mx-auto shadow-lg rounded-2xl border border-gray-200 p-8 lg:p-10 flex flex-col overflow-y-auto">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <Shield className="h-8 w-8 text-blue-600 mr-2" />
@@ -295,7 +295,7 @@ const LoginForm = () => {
         )}
 
         {/* ABHA Support */}
-        <div className="mt-6 text-center">
+        <div className="mt-auto pt-8 text-center">
           <p className="text-sm text-gray-600">
             Need ABHA registration?{' '}
             <button

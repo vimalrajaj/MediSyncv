@@ -120,14 +120,23 @@ router.get('/search', validateRequest(searchSchema), async (req, res) => {
       }
     }
 
-    // Sort by relevance (exact matches first, then by confidence)
+    // Normalize any incomplete result objects to avoid runtime errors
+    for (const r of results) {
+      if (!r.display) r.display = r.definition || r.code || '';
+      if (typeof r.display !== 'string') r.display = String(r.display || '');
+    }
+
+    // Sort by relevance (exact matches first, then by confidence) – safe guards added
+    const qLower = query.toLowerCase();
     results.sort((a, b) => {
-      const aExact = a.display.toLowerCase().includes(query.toLowerCase()) ? 1 : 0;
-      const bExact = b.display.toLowerCase().includes(query.toLowerCase()) ? 1 : 0;
+      const aDisp = (a.display || '').toLowerCase();
+      const bDisp = (b.display || '').toLowerCase();
+      const aExact = aDisp.includes(qLower) ? 1 : 0;
+      const bExact = bDisp.includes(qLower) ? 1 : 0;
       if (aExact !== bExact) return bExact - aExact;
-      
-      const aConf = a.confidence || 0;
-      const bConf = b.confidence || 0;
+
+      const aConf = (a.confidence ?? 0);
+      const bConf = (b.confidence ?? 0);
       return bConf - aConf;
     });
 

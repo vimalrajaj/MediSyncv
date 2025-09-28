@@ -77,6 +77,52 @@ class FhirService {
       throw error;
     }
   }
+
+  // Create a structured diagnosis session object matching backend route expectations
+  createDiagnosisSession(patient, problemList, fhirBundle, options = {}) {
+    if (!patient || !patient.id) {
+      throw new Error('Patient info with id is required to create a diagnosis session');
+    }
+    const sessionTitle = options.title || `Clinical Visit ${new Date().toLocaleDateString()}`;
+    const entries = problemList.map(p => ({
+      namaste_code: p.code,
+      namaste_display: p.display,
+      icd11_code: p.icd11?.code || null,
+      icd11_display: p.icd11?.display || null,
+      confidence_score: p.icd11?.confidence || p.confidence || 0,
+      mapping_source: p.icd11 ? 'auto_mapping' : 'manual_entry',
+      clinical_notes: p.notes || null
+    }));
+    return {
+      medical_record_number: patient.medical_record_number || patient.mrn || 'UNKNOWN-MRN',
+      patient_id: patient.id,
+      session_title: sessionTitle,
+      chief_complaint: options.chiefComplaint || 'General Consultation',
+      clinical_notes: options.notes || 'Diagnoses recorded via AYUSH terminology service',
+      clinician_name: options.clinicianName || 'Current User',
+      clinician_id: options.clinicianId || null,
+      diagnosis_entries: entries,
+      fhir_bundle: fhirBundle || null
+    };
+  }
+
+  // Retrieve diagnosis history for a patient (wrapper for backend API)
+  async getPatientDiagnosisHistory(patientId, page = 1, limit = 50) {
+    if (!patientId) return { sessions: [] };
+    try {
+      const url = resolveApiUrl(`/api/v1/diagnosis-sessions?patient_id=${encodeURIComponent(patientId)}&page=${page}&limit=${limit}`);
+      const response = await fetch(url);
+      if (!response.ok) {
+        console.error('Failed to fetch diagnosis history', response.status);
+        return { sessions: [] };
+      }
+      const data = await response.json();
+      return { sessions: data.sessions || [] };
+    } catch (err) {
+      console.error('Diagnosis history error:', err);
+      return { sessions: [] };
+    }
+  }
 }
 
 /**

@@ -4,7 +4,7 @@ import Button from '../../../components/ui/Button';
 import fhirService from '../../../services/fhirService';
 import FhirBundleViewer from '../../../components/FhirBundleViewer';
 
-const PatientRecords = ({ patientId, medicalRecordNumber }) => {
+const PatientRecords = ({ patientId, medicalRecordNumber, refreshTrigger }) => {
   const [records, setRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -18,6 +18,13 @@ const PatientRecords = ({ patientId, medicalRecordNumber }) => {
       setRecords([]);
     }
   }, [medicalRecordNumber]);
+
+  // React to external refresh trigger (incrementing number or changing token)
+  useEffect(() => {
+    if (refreshTrigger && medicalRecordNumber) {
+      fetchPatientRecords();
+    }
+  }, [refreshTrigger]);
 
   const fetchPatientRecords = async () => {
     if (!medicalRecordNumber) return;
@@ -85,11 +92,16 @@ const PatientRecords = ({ patientId, medicalRecordNumber }) => {
     <div className="bg-card border border-border rounded-lg mt-6">
       <div className="bg-muted px-6 py-4 border-b border-border">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Icon name="FileText" size={20} className="text-text-secondary" />
-            <h3 className="text-lg font-semibold text-text-primary">Patient Records</h3>
-            <span className="px-2 py-1 bg-primary/10 text-primary text-xs font-medium rounded">
-              {records.length} {records.length === 1 ? 'session' : 'sessions'}
+          <div className="flex items-center space-x-3">
+            <div className="relative flex items-center">
+              <span className="absolute -left-4 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full bg-gradient-to-tr from-rose-600 via-fuchsia-500 to-indigo-500 opacity-25 blur-sm" />
+              <Icon name="FileText" size={22} className="relative text-fuchsia-600 drop-shadow-sm" />
+            </div>
+            <h3 className="relative text-lg font-extrabold tracking-wide bg-gradient-to-r from-fuchsia-600 via-indigo-500 to-cyan-500 bg-clip-text text-transparent flex items-center after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[3px] after:w-12 after:rounded-full after:bg-gradient-to-r after:from-fuchsia-600 after:to-cyan-400">
+              Patient Records
+            </h3>
+            <span className="px-2 py-0.5 bg-gradient-to-r from-fuchsia-600/15 to-cyan-500/15 text-fuchsia-700 text-[10px] font-semibold rounded-full border border-fuchsia-400/40 shadow-sm">
+              {records.length} {records.length === 1 ? 'SESSION' : 'SESSIONS'}
             </span>
             {(patientId || medicalRecordNumber) && (
               <div className="flex items-center space-x-2 text-sm text-text-secondary">

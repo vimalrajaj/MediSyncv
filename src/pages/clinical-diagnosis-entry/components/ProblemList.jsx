@@ -40,11 +40,16 @@ const ProblemList = ({ problems, onRemove, onGenerateFHIR, onSaveToRecord, isSav
       {/* Header */}
       <div className="bg-muted px-6 py-4 border-b border-border">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Icon name="List" size={20} className="text-text-secondary" />
-            <h3 className="text-lg font-semibold text-text-primary">Problem List</h3>
-            <span className="px-2 py-1 bg-primary/10 text-primary text-xs font-medium rounded">
-              {problems?.length} {problems?.length === 1 ? 'diagnosis' : 'diagnoses'}
+          <div className="flex items-center space-x-3">
+            <div className="relative flex items-center">
+              <span className="absolute -left-4 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full bg-gradient-to-tr from-indigo-600 via-teal-500 to-emerald-400 opacity-25 blur-sm" />
+              <Icon name="List" size={22} className="relative text-primary drop-shadow-sm" />
+            </div>
+            <h3 className="relative text-lg font-extrabold tracking-wide bg-gradient-to-r from-indigo-600 via-teal-500 to-emerald-500 bg-clip-text text-transparent flex items-center after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[3px] after:w-10 after:rounded-full after:bg-gradient-to-r after:from-indigo-600 after:to-teal-500">
+              Problem List
+            </h3>
+            <span className="px-2 py-0.5 bg-gradient-to-r from-indigo-600/15 to-teal-500/15 text-primary text-[10px] font-semibold rounded-full border border-primary/30 shadow-sm">
+              {problems?.length} {problems?.length === 1 ? 'DIAGNOSIS' : 'DIAGNOSES'}
             </span>
             {selectedPatient && (
               <div className="flex items-center space-x-2 text-sm text-text-secondary">
