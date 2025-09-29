@@ -41,7 +41,8 @@ app.use(cors({
     ? [
         'https://medi-syncv-interopx.vercel.app',
         'https://medisync-interopx.vercel.app',
-        process.env.FRONTEND_URL
+        process.env.FRONTEND_URL,
+        /.*\.vercel\.app$/
       ] 
     : ['http://localhost:4028', 'http://localhost:3000'],
   credentials: true
@@ -146,33 +147,41 @@ app.use('*', (req, res) => {
   });
 });
 
-// Schedule WHO ICD-11 sync (daily at 2 AM)
-cron.schedule('0 2 * * *', () => {
-  logger.info('Starting scheduled WHO ICD-11 sync...');
-  syncWhoIcdData().catch(err => {
-    logger.error('Scheduled WHO ICD-11 sync failed:', err);
+// Only schedule cron jobs and start server if not in serverless environment
+if (process.env.VERCEL !== '1') {
+  // Schedule WHO ICD-11 sync (daily at 2 AM)
+  cron.schedule('0 2 * * *', () => {
+    logger.info('Starting scheduled WHO ICD-11 sync...');
+    syncWhoIcdData().catch(err => {
+      logger.error('Scheduled WHO ICD-11 sync failed:', err);
+    });
   });
-});
 
-// Start server
-app.listen(PORT, () => {
-  logger.info(`AYUSH Terminology Service listening on port ${PORT}`);
-  logger.info(`Environment: ${process.env.NODE_ENV}`);
-  logger.info(`FHIR Base URL: ${process.env.FHIR_BASE_URL}`);
-  
-  // Initialize CSV mapping service on startup
-  csvMappingService.loadMappings().catch(err => {
-    logger.error('Failed to load CSV mappings on startup:', err);
+  // Start server
+  app.listen(PORT, () => {
+    logger.info(`AYUSH Terminology Service listening on port ${PORT}`);
+    logger.info(`Environment: ${process.env.NODE_ENV}`);
+    logger.info(`FHIR Base URL: ${process.env.FHIR_BASE_URL}`);
+    
+    // Initialize CSV mapping service on startup
+    csvMappingService.loadMappings().catch(err => {
+      logger.error('Failed to load CSV mappings on startup:', err);
+    });
+    
+    // Initial WHO ICD-11 sync on startup
+    if (process.env.NODE_ENV !== 'test') {
+      setTimeout(() => {
+        syncWhoIcdData().catch(err => {
+          logger.error('Initial WHO ICD-11 sync failed:', err);
+        });
+      }, 5000);
+    }
   });
-  
-  // Initial WHO ICD-11 sync on startup
-  if (process.env.NODE_ENV !== 'test') {
-    setTimeout(() => {
-      syncWhoIcdData().catch(err => {
-        logger.error('Initial WHO ICD-11 sync failed:', err);
-      });
-    }, 5000);
-  }
-});
+} else {
+  // For Vercel serverless, just initialize CSV mappings
+  csvMappingService.loadMappings().catch(err => {
+    logger.error('Failed to load CSV mappings:', err);
+  });
+}
 
 export default app;
