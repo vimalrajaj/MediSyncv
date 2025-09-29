@@ -17,14 +17,14 @@ const ClinicalDiagnosisEntry = () => {
   const { user, abhaToken, isAbhaAuthenticated } = useAuth();
   const fhirService = useFhirTerminology(abhaToken);
   
-  // Patient Information State
+  // Patient Information State with default demo patient
   const [patient, setPatient] = useState({
-    id: '',
-    firstName: '',
-    lastName: '',
-    medicalRecordNumber: '',
-    dateOfBirth: '',
-    gender: ''
+    id: 'P001',
+    firstName: 'Rajesh',
+    lastName: 'Patel',
+    medicalRecordNumber: 'MRN001',
+    dateOfBirth: '1985-03-15',
+    gender: 'male'
   });
 
   // Clinical Session State
@@ -52,6 +52,140 @@ const ClinicalDiagnosisEntry = () => {
   const [success, setSuccess] = useState(null);
   const [fhirBundle, setFhirBundle] = useState(null);
   const [capabilities, setCapabilities] = useState(null);
+  
+  // Saved Records State with default sample data
+  const [savedRecords, setSavedRecords] = useState([
+    {
+      id: 'session-sample-001',
+      patient_id: 'P001',
+      medical_record_number: 'MRN001',
+      session_title: 'Initial Ayurveda Consultation',
+      chief_complaint: 'Patient presents with chronic digestive issues and fatigue',
+      clinical_notes: 'Patient has been experiencing digestive discomfort for 3 months. Recommended dietary modifications and herbal treatment.',
+      session_date: '2025-09-25',
+      created_at: '2025-09-25T10:30:00.000Z',
+      created_by: 'Dr. Rajesh Kumar',
+      diagnosis_entries: [
+        {
+          id: 'entry-001-1',
+          namaste_code: 'N004',
+          namaste_display: 'Digestive Issues (Agnimandya)',
+          namaste_system: 'http://namaste.gov.in/fhir/CodeSystem/ayush-terminology',
+          icd11_code: 'DD91.0',
+          icd11_display: 'Functional dyspepsia',
+          clinical_notes: 'Chronic indigestion with bloating after meals',
+          status: 'active',
+          confidence: 0.92,
+          added_at: '2025-09-25T10:35:00.000Z'
+        },
+        {
+          id: 'entry-001-2',
+          namaste_code: 'N015',
+          namaste_display: 'General Weakness (Daurbalya)',
+          namaste_system: 'http://namaste.gov.in/fhir/CodeSystem/ayush-terminology',
+          icd11_code: 'MG22',
+          icd11_display: 'Fatigue',
+          clinical_notes: 'Generalized fatigue affecting daily activities',
+          status: 'active',
+          confidence: 0.88,
+          added_at: '2025-09-25T10:37:00.000Z'
+        }
+      ],
+      fhir_bundle: {
+        resourceType: 'Bundle',
+        id: 'bundle-sample-001',
+        type: 'transaction',
+        timestamp: '2025-09-25T10:30:00.000Z'
+      }
+    },
+    {
+      id: 'session-sample-002',
+      patient_id: 'P002',
+      medical_record_number: 'MRN002',
+      session_title: 'Follow-up Visit - Respiratory Issues',
+      chief_complaint: 'Follow-up for respiratory symptoms and seasonal allergies',
+      clinical_notes: 'Patient showing improvement with prescribed herbal formulations. Continuing treatment plan.',
+      session_date: '2025-09-27',
+      created_at: '2025-09-27T14:15:00.000Z',
+      created_by: 'Dr. Priya Sharma',
+      diagnosis_entries: [
+        {
+          id: 'entry-002-1',
+          namaste_code: 'N003',
+          namaste_display: 'Cough (Kasa)',
+          namaste_system: 'http://namaste.gov.in/fhir/CodeSystem/ayush-terminology',
+          icd11_code: 'MD12',
+          icd11_display: 'Cough',
+          clinical_notes: 'Dry cough, worse in morning, responding well to treatment',
+          status: 'improving',
+          confidence: 0.95,
+          added_at: '2025-09-27T14:20:00.000Z'
+        },
+        {
+          id: 'entry-002-2',
+          namaste_code: 'N025',
+          namaste_display: 'Allergic Rhinitis (Dusht Pratishyaya)',
+          namaste_system: 'http://namaste.gov.in/fhir/CodeSystem/ayush-terminology',
+          icd11_code: 'CA08.0',
+          icd11_display: 'Allergic rhinitis due to pollen',
+          clinical_notes: 'Seasonal allergy symptoms, nasal congestion and sneezing',
+          status: 'active',
+          confidence: 0.90,
+          added_at: '2025-09-27T14:22:00.000Z'
+        }
+      ],
+      fhir_bundle: {
+        resourceType: 'Bundle',
+        id: 'bundle-sample-002',
+        type: 'transaction',
+        timestamp: '2025-09-27T14:15:00.000Z'
+      }
+    },
+    {
+      id: 'session-sample-003',
+      patient_id: 'P002',
+      medical_record_number: 'MRN002',
+      session_title: 'Women\'s Health Consultation',
+      chief_complaint: 'Menstrual irregularities and stress-related symptoms',
+      clinical_notes: 'Patient reports irregular cycles and increased stress. Recommended stress management techniques and herbal support.',
+      session_date: '2025-09-28',
+      created_at: '2025-09-28T11:00:00.000Z',
+      created_by: 'Dr. Kavita Desai',
+      diagnosis_entries: [
+        {
+          id: 'entry-003-1',
+          namaste_code: 'N030',
+          namaste_display: 'Menstrual Disorders (Rajodosha)',
+          namaste_system: 'http://namaste.gov.in/fhir/CodeSystem/ayush-terminology',
+          icd11_code: 'GA34',
+          icd11_display: 'Irregular menstruation',
+          clinical_notes: 'Irregular menstrual cycles for past 6 months',
+          status: 'active',
+          confidence: 0.94,
+          added_at: '2025-09-28T11:05:00.000Z'
+        },
+        {
+          id: 'entry-003-2',
+          namaste_code: 'N018',
+          namaste_display: 'Mental Stress (Mansik Tanav)',
+          namaste_system: 'http://namaste.gov.in/fhir/CodeSystem/ayush-terminology',
+          icd11_code: 'QE10',
+          icd11_display: 'Stress-related symptoms',
+          clinical_notes: 'Work-related stress affecting daily life and sleep',
+          status: 'active',
+          confidence: 0.89,
+          added_at: '2025-09-28T11:07:00.000Z'
+        }
+      ],
+      fhir_bundle: {
+        resourceType: 'Bundle',
+        id: 'bundle-sample-003',
+        type: 'transaction',
+        timestamp: '2025-09-28T11:00:00.000Z'
+      }
+    }
+  ]);
+  const [loadingRecords, setLoadingRecords] = useState(false);
 
   // Load FHIR capabilities on mount
   useEffect(() => {
@@ -293,6 +427,107 @@ const ClinicalDiagnosisEntry = () => {
     linkElement.click();
   };
 
+  const saveDiagnoses = async () => {
+    if (!patient.id || !patient.medicalRecordNumber) {
+      setError('Patient ID and Medical Record Number are required');
+      return;
+    }
+
+    if (diagnoses.length === 0) {
+      setError('Please add at least one diagnosis to save');
+      return;
+    }
+
+    setSaving(true);
+    setError(null);
+
+    try {
+      // Generate FHIR bundle if not already generated
+      if (!fhirBundle) {
+        await generateFHIRBundle();
+      }
+
+      // Create diagnosis session record
+      const sessionRecord = {
+        id: `session-${Date.now()}`,
+        patient_id: patient.id,
+        medical_record_number: patient.medicalRecordNumber,
+        session_title: session.title,
+        chief_complaint: session.chiefComplaint,
+        clinical_notes: session.notes,
+        session_date: session.date,
+        created_at: new Date().toISOString(),
+        created_by: user?.name || 'Current User',
+        diagnosis_entries: diagnoses.map(diagnosis => ({
+          id: `entry-${diagnosis.id}`,
+          namaste_code: diagnosis.namasteCode.code,
+          namaste_display: diagnosis.namasteCode.display,
+          namaste_system: diagnosis.namasteCode.system,
+          icd11_code: diagnosis.translation?.success ? diagnosis.translation.translations[0]?.targetCode : null,
+          icd11_display: diagnosis.translation?.success ? diagnosis.translation.translations[0]?.targetDisplay : null,
+          clinical_notes: diagnosis.clinicalNotes,
+          status: diagnosis.status,
+          confidence: diagnosis.confidence,
+          added_at: diagnosis.addedAt
+        })),
+        fhir_bundle: fhirBundle
+      };
+
+      // Save to records
+      setSavedRecords(prev => [sessionRecord, ...prev]);
+      
+      setSuccess(`Clinical session saved successfully! Patient: ${patient.firstName} ${patient.lastName}, Session: ${session.title}`);
+      
+      // Reset form after successful save
+      setTimeout(() => {
+        setDiagnoses([]);
+        setFhirBundle(null);
+        setCurrentDiagnosis({
+          namasteCode: null,
+          translation: null,
+          clinicalNotes: '',
+          status: 'active',
+          confidence: null
+        });
+      }, 2000);
+      
+    } catch (err) {
+      console.error('Save error:', err);
+      setError(err.message || 'Failed to save clinical session');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const loadSavedRecords = async () => {
+    if (!patient.medicalRecordNumber) return;
+    
+    setLoadingRecords(true);
+    try {
+      // In a real app, this would fetch from your backend
+      // For now, we'll use the savedRecords state
+      const filteredRecords = savedRecords.filter(record => 
+        record.medical_record_number === patient.medicalRecordNumber
+      );
+      
+      // You can add actual API call here if needed
+      // const response = await fetch(`/api/patients/${patient.medicalRecordNumber}/sessions`);
+      // const data = await response.json();
+      
+    } catch (err) {
+      console.error('Error loading records:', err);
+    } finally {
+      setLoadingRecords(false);
+    }
+  };
+
+  // Load saved records when patient changes
+  useEffect(() => {
+    if (patient.medicalRecordNumber) {
+      loadSavedRecords();
+    }
+  }, [patient.medicalRecordNumber]);
+
   if (!isAbhaAuthenticated) {
     return (
       <div className="max-w-4xl mx-auto p-6">
@@ -383,6 +618,50 @@ const ClinicalDiagnosisEntry = () => {
             </div>
             
             <div className="space-y-4">
+              {/* Quick Patient Selection */}
+              <div className="flex items-center space-x-2 mb-4">
+                <span className="text-sm font-medium text-gray-700">Quick Select:</span>
+                <button
+                  onClick={() => setPatient({
+                    id: 'P001',
+                    firstName: 'Rajesh',
+                    lastName: 'Patel',
+                    medicalRecordNumber: 'MRN001',
+                    dateOfBirth: '1985-03-15',
+                    gender: 'male'
+                  })}
+                  className="px-3 py-1 text-xs bg-blue-100 text-blue-800 rounded-full hover:bg-blue-200"
+                >
+                  Patient 1 (Rajesh)
+                </button>
+                <button
+                  onClick={() => setPatient({
+                    id: 'P002',
+                    firstName: 'Meera',
+                    lastName: 'Singh',
+                    medicalRecordNumber: 'MRN002',
+                    dateOfBirth: '1992-08-22',
+                    gender: 'female'
+                  })}
+                  className="px-3 py-1 text-xs bg-green-100 text-green-800 rounded-full hover:bg-green-200"
+                >
+                  Patient 2 (Meera)
+                </button>
+                <button
+                  onClick={() => setPatient({
+                    id: '',
+                    firstName: '',
+                    lastName: '',
+                    medicalRecordNumber: '',
+                    dateOfBirth: '',
+                    gender: ''
+                  })}
+                  className="px-3 py-1 text-xs bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200"
+                >
+                  New Patient
+                </button>
+              </div>
+              
               <div className="grid grid-cols-2 gap-4">
                 <input
                   type="text"
@@ -921,6 +1200,141 @@ const ClinicalDiagnosisEntry = () => {
                 )}
                 <span className="font-medium">Save Record</span>
               </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Saved Clinical Records - Always show when patient is selected */}
+      {patient.medicalRecordNumber && (
+        <div className="bg-white rounded-lg shadow-sm border mt-6">
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <FileText className="h-6 w-6 text-green-600" />
+                <h3 className="text-lg font-semibold text-gray-900">Patient Records</h3>
+                <span className={`px-3 py-1 text-sm rounded-full ${
+                  savedRecords.filter(record => record.medical_record_number === patient.medicalRecordNumber).length > 0 
+                    ? 'bg-green-100 text-green-800' 
+                    : 'bg-gray-100 text-gray-600'
+                }`}>
+                  {savedRecords.filter(record => record.medical_record_number === patient.medicalRecordNumber).length} sessions
+                </span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={loadSavedRecords}
+                  disabled={loadingRecords}
+                  className="flex items-center space-x-2 px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50"
+                >
+                  {loadingRecords ? <RefreshCw className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                  <span>Refresh</span>
+                </button>
+                <button
+                  onClick={() => {
+                    console.log('Current Patient MRN:', patient.medicalRecordNumber);
+                    console.log('All Records:', savedRecords);
+                    console.log('Filtered Records:', savedRecords.filter(record => record.medical_record_number === patient.medicalRecordNumber));
+                  }}
+                  className="px-3 py-1 text-xs bg-blue-100 text-blue-800 rounded-lg hover:bg-blue-200"
+                >
+                  Debug
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div className="p-6">
+            {savedRecords.filter(record => record.medical_record_number === patient.medicalRecordNumber).length === 0 ? (
+              <div className="text-center py-8">
+                <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h4 className="text-lg font-medium text-gray-600 mb-2">No Records Found</h4>
+                <p className="text-gray-500">
+                  This patient has no diagnosis records yet. Start by adding diagnoses and saving the session.
+                </p>
+                <div className="mt-4 text-sm text-gray-400">
+                  <p>Current Patient MRN: {patient.medicalRecordNumber}</p>
+                  <p>Total records in system: {savedRecords.length} sessions</p>
+                  <p>Records for this patient: {savedRecords.filter(record => record.medical_record_number === patient.medicalRecordNumber).length}</p>
+                  <div className="mt-2 text-xs">
+                    <p>Available MRNs in records: {[...new Set(savedRecords.map(r => r.medical_record_number))].join(', ')}</p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4 max-h-96 overflow-y-auto">
+                {savedRecords
+                  .filter(record => record.medical_record_number === patient.medicalRecordNumber)
+                  .map((record) => (
+                <div key={record.id} className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <h4 className="font-semibold text-gray-900">{record.session_title}</h4>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {new Date(record.created_at).toLocaleDateString()} at {new Date(record.created_at).toLocaleTimeString()}
+                      </p>
+                      {record.chief_complaint && (
+                        <p className="text-sm text-gray-700 mt-2">
+                          <strong>Chief Complaint:</strong> {record.chief_complaint}
+                        </p>
+                      )}
+                    </div>
+                    <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                      {record.diagnosis_entries.length} diagnoses
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    {record.diagnosis_entries.map((entry, index) => (
+                      <div key={entry.id} className="flex items-start p-3 bg-gray-50 rounded-lg">
+                        <div className="w-6 h-6 flex items-center justify-center bg-blue-100 text-blue-800 rounded-full mr-3 text-xs font-semibold">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 mb-1">
+                            <span className="font-medium text-gray-900">{entry.namaste_display}</span>
+                            <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-mono rounded">
+                              {entry.namaste_code}
+                            </span>
+                          </div>
+                          
+                          {entry.icd11_code && (
+                            <div className="flex items-center space-x-2 text-sm text-gray-600 mb-1">
+                              <ArrowRight className="h-3 w-3" />
+                              <span className="font-medium">ICD-11:</span>
+                              <span className="font-mono">{entry.icd11_code}</span>
+                              <span>-</span>
+                              <span>{entry.icd11_display}</span>
+                            </div>
+                          )}
+                          
+                          {entry.clinical_notes && (
+                            <p className="text-sm text-gray-600 mt-1">
+                              <strong>Notes:</strong> {entry.clinical_notes}
+                            </p>
+                          )}
+                          
+                          <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
+                            <span>Status: <span className="capitalize">{entry.status}</span></span>
+                            {entry.confidence && (
+                              <span>Confidence: {Math.round(entry.confidence * 100)}%</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {record.clinical_notes && (
+                    <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                      <p className="text-sm text-gray-700">
+                        <strong>Session Notes:</strong> {record.clinical_notes}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+              </div>
             )}
           </div>
         </div>
