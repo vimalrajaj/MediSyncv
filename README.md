@@ -157,7 +157,7 @@ If API key generation fails, UI produces a dummy key so the flow is not blocked 
 - Add JWT auth for internal admin endpoints (future)
 - Enhance audit logging for clinical writes
 
-## �️ Roadmap (Next Steps)
+## 🗺️ Roadmap (Next Steps)
 - Replace legacy bundle creation with full FHIR operation set
 - Add granular field validation + toasts on patient form
 - Global text/branding finalization (ensure no stale references)
@@ -167,5 +167,55 @@ If API key generation fails, UI produces a dummy key so the flow is not blocked 
 ## 🤝 Attribution
 Powered by Team InterOpX. Original concept aligned with AYUSH digital terminology modernization goals.
 
-## � License
+## 📄 License
 MIT (see server package metadata; add root LICENSE file if needed).
+
+## ☁️ Deployment (Vercel)
+
+This project can be deployed to Vercel using the included `vercel.json`.
+
+### Build Targets
+- React frontend: static build (`npm run build`) outputs to `build/`.
+- Serverless API: Express app exported from `server/src/app.js` handles `/api/*` & `/fhir/*`.
+
+### Steps
+1. Push repository to GitHub/GitLab and import into Vercel.
+2. In Vercel Project Settings:
+	- Build Command: `npm run build`
+	- Output Directory: `build`
+3. Add Environment Variables (Production & Preview):
+```
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
+FHIR_BASE_URL=https://<your-domain>/fhir
+RATE_LIMIT_MAX_REQUESTS=150
+RATE_LIMIT_WINDOW_MS=900000
+CORS_ALLOWED_ORIGINS=https://<your-domain>
+```
+4. Deploy (Vercel will create a preview URL).
+5. Test endpoints:
+	- `GET /health`
+	- `GET /api/v1/terminology/search?q=test`
+	- `GET /fhir/metadata`
+
+### Local Production Simulation
+```bash
+npm run build
+npm run serve
+```
+
+### Troubleshooting
+| Symptom | Likely Cause | Fix |
+|---------|--------------|-----|
+| 404 on /api routes | `vercel.json` missing | Ensure file at repo root and redeploy |
+| CORS errors | Origin mismatch | Set `CORS_ALLOWED_ORIGINS` env |
+| Slow first API call | Cold start | Warm by pinging `/health` periodically |
+| Cron tasks not running | Serverless limitation | Move cron to external worker (GitHub Action) |
+
+### Post-Deploy Checklist
+- [ ] Dark mode toggle works
+- [ ] Patient create + session save updates list instantly
+- [ ] Terminology search suggestions appear quickly
+- [ ] FHIR endpoints reachable
+
