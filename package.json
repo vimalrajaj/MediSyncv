@@ -60,7 +60,7 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "vite build --sourcemap",
+    "build": "npx vite build --sourcemap",
     "serve": "vite preview",
     "check:supabase": "node scripts/checkSupabaseConnection.mjs"
   },

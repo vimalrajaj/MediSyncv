@@ -1,10 +1,8 @@
 {
   "version": 2,
-  "name": "medisync-ayush-terminology",
   "buildCommand": "npm run build",
   "outputDirectory": "build",
-  "installCommand": "npm install --legacy-peer-deps",
-  "framework": "vite",
+  "installCommand": "npm install --include=dev",
   "rewrites": [
     {
       "source": "/(.*)",
