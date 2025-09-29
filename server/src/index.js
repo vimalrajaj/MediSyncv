@@ -38,7 +38,11 @@ app.use(helmet());
 app.use(compression());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-frontend-domain.com'] 
+    ? [
+        'https://medi-syncv-interopx.vercel.app',
+        'https://medisync-interopx.vercel.app',
+        process.env.FRONTEND_URL
+      ] 
     : ['http://localhost:4028', 'http://localhost:3000'],
   credentials: true
 }));
