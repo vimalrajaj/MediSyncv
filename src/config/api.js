@@ -9,8 +9,8 @@ export const resolveApiUrl = (path = '') => {
     return path;
   }
 
-  // For Vercel deployment, use relative paths when no base URL is set
-  if (!API_BASE_URL || API_BASE_URL === '') {
+  if (!API_BASE_URL) {
+    // Fall back to same-origin relative path when base URL is not configured
     return path.startsWith('/') ? path : `/${path}`;
   }
 
