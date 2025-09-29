@@ -2,7 +2,7 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "build",
-  "installCommand": "npm install --include=dev",
+  "installCommand": "npm install --legacy-peer-deps --include=dev",
   "rewrites": [
     {
       "source": "/(.*)",
@@ -29,6 +29,7 @@
     }
   ],
   "env": {
-    "NODE_ENV": "production"
+    "NODE_ENV": "production",
+    "NPM_CONFIG_LEGACY_PEER_DEPS": "true"
   }
 }
